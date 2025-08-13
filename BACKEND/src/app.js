@@ -1,12 +1,15 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: '*',
     credentials: true,
   })
 );
@@ -15,15 +18,16 @@ app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use(require('lusca').csrf());
 
-//routes
+// Routes
 import userRouter from "./routes/user.routes.js";
 import chatbotRouter from "./routes/chatbot.routes.js";
-
-//routes declaration
+import articlesRouter from "./routes/articles.routes.js"; // Import new articles route
+import productHuntRouter from "./routes/producthunt.routes.js";
+// Routes declaration
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/chatbot", chatbotRouter);
-
-// https://localhost:8000/api/v1/users/register
-
+app.use("/api/v1/articles", articlesRouter); // Add new route
+app.use("/api/v1/products", productHuntRouter);
 export { app };
